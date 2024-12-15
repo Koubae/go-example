@@ -1,0 +1,11 @@
+version: '3'
+
+silent: true
+
+tasks:
+  default:
+    desc: Tasks
+    summary: |
+      This is the main task
+    cmds:
+      - task --list-all
