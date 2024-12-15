@@ -18,7 +18,8 @@
 # vendor/
 
 # Go workspace file
-go.work
+# I PURPOSLY ommit go.work since this is an example repository!
+#go.work
 go.work.sum
 
 # env file

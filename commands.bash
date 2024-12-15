@@ -11,3 +11,8 @@ go work init ./hello
 go work use ./example/hello
 # syncs dependencies from the workspace’s build list into each of the workspace modules.
 go work sync
+
+# ------------------
+# Modules
+# ------------------
+go mod init github.com/koubae/go-example
