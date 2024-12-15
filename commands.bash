@@ -16,3 +16,6 @@ go work sync
 # Modules
 # ------------------
 go mod init github.com/koubae/go-example
+
+mkdir hello; cd hello;
+go mod init github.com/koubae/go-example/hello
