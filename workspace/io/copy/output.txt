@@ -1,0 +1,15 @@
+This is a sample file
+Using Go Program we want to read from one file
+Then copy it over another new file
+
+Run:
+
+go run <filename>.go
+
+That's it!
+
+Hello World
+こんにちは世界
+Привет, мир
+Hola Mundo
+مرحبا بالعالم
