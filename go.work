@@ -1,3 +1,7 @@
 go 1.23.4
 
-use ./workspace/hello
+use (
+	./workspace/dir1/dir2/dir3/mymodule
+	./workspace/hello
+	./workspace/io/filedb
+)
