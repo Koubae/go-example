@@ -1,5 +1,5 @@
 # List of commands
-
+go get gopkg.in/yaml.v3
 
 # ------------------
 # Workspace
@@ -11,6 +11,12 @@ go work init ./hello
 go work use ./example/hello
 # syncs dependencies from the workspace’s build list into each of the workspace modules.
 go work sync
+
+go work use ./workspace/io/filedb
+go work use ./workspace/dir1/dir2/dir3/mymodule
+
+# https://go.dev/ref/mod#environment-variables
+GOWORK=off go run main.go
 
 # ------------------
 # Modules
