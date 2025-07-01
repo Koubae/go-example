@@ -88,3 +88,25 @@ While I find the workspace neat and pretty cool, this behavior is... "weird"... 
 Issue ticket to Go... or even create a pool request and change this or at least, have the workspace for a specific 
 module **turned off** inside the `go.mod`... and not just a env variable (`GOWORK`)
 
+
+Cool Stuff
+=========
+
+### Go Hot Reloading
+
+* [air-verse/air](https://github.com/air-verse/air)
+
+```bash
+go install github.com/air-verse/air@latest
+
+# initialize
+air init
+# run
+air
+air server --port 8080
+# Will run ./tmp/main -h
+air -- -h
+
+# Will run air with custom config and pass -h argument to the built binary
+air -c .air.toml -- -h
+```
