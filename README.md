@@ -8,17 +8,24 @@ _Go Example Workspace with multiple GoLang Recipes from simple one, http servers
 * [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
 * [Learn Go with Tests](https://quii.gitbook.io/learn-go-with-tests)
 
-This meant to represent your local Go workspace. 
+This is meant to represent your local Go workspace. 
 So you would not commit this to source but rather content inside [workspace](./workspace) would be separate
-Git repositories/sources, this project is just to show how a Go workspace may look like.
+Git repositories/sources; this project is just to show what a Go workspace may look like.
 
-Also off course, contains actual simple Go / Started examples. 
+Also, of course, contains actual simple Go / Started examples. 
 
+
+### Quickstart
+
+
+```bash
+make init
+```
 
 Workspace
 ---------
 
-As write above, the [go.work](go.work) is **intentionally** commited to source, this is a example project on how
+As write above, the [go.work](go.work) is **intentionally** committed to source; this is an example project on how
 a Go Workspace may be managed.
 
 
@@ -98,6 +105,11 @@ Cool Stuff
 
 ```bash
 go install github.com/air-verse/air@latest
+
+# Make sure that GOPATH and GOROOT is in your PATH
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin
 
 # initialize
 air init

@@ -1,3 +1,8 @@
+/*
+Script to test quick things. nothing serious
+
+WARNING:🧨 This could visually hurting your eyes
+*/
 package main
 
 import (
@@ -34,31 +39,15 @@ func PalindromicSubstring() {
 
 	fmt.Println(a == b)
 
-	/*
-
-		"babad"
-			b == d X
-
-		"baba"
-		"bab"
-		"ba"a
-
-
-		"abad"
-
-	*/
-
 }
 
 func substringSearch() {
-	//scenario := "dvdf"
 	scenario := "pwwkew"
 	var longest int
 	var current int
 	var substring string
 	for _, r := range scenario {
 		c := string(r)
-		//fmt.Println(c)
 
 		if strings.Contains(substring, c) {
 			substringNew := ""
