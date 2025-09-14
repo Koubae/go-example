@@ -28,19 +28,26 @@ Workspace
 As write above, the [go.work](go.work) is **intentionally** committed to source; this is an example project on how
 a Go Workspace may be managed.
 
+Add a new module to the workspace:
+
+```bash
+make workspace-add MODULE=path/to/module
+```
+
+You should commit `./workspace/` part.
 
 
 ### Note about workspace
 
 I stabled upon a "weird" and "unexpected behavior" while working on a workspace, well is unexpected till you know
-it then it becomes... "expected" I guess.
+ it, then it becomes... "expected" I guess.
 
-Once you create a workspace and have a [go.work](go.work) in some root directory... than everything from the same
+Once you create a workspace and have a [go.work](go.work) in some root directory... then everything from the same
 level of "root" and all its "children/subdirectory" are "part of Go Workspace"...
 You **can't escape it**.
 
 If you have a Go Workspace in `~/workspace_go/go.work` and create a Go Module in `~/workspace/dir1/dir2/dir3/mymodule/go.mod`
-go will know that module is part of a workspace. So if you attempt to create a package in it and import **it will not work**
+go will know that module is part of a workspace. So if you attempt to create a package in it and import, **it will not work**
 unless you specifically add that into your `go.work`.
 
 Example:
@@ -81,7 +88,7 @@ GOWORK=off go run main.go
 ```
 
 
-The "official" documentation and how I understood this behavior was expected I follow those links/doc in order:
+The "official" documentation and how I understood this behavior was expected I to follow those links/doc in order:
 
 * [go build not working when used with workspaces](https://stackoverflow.com/a/76180815/13903942)
   * [Minimal version selection (MVS)](https://go.dev/ref/mod#minimal-version-selection)
@@ -93,7 +100,7 @@ The "official" documentation and how I understood this behavior was expected I f
 
 While I find the workspace neat and pretty cool, this behavior is... "weird"... I may see one day if I can create a
 Issue ticket to Go... or even create a pool request and change this or at least, have the workspace for a specific 
-module **turned off** inside the `go.mod`... and not just a env variable (`GOWORK`)
+module **turned off** inside the `go.mod`... and not just an env variable (`GOWORK`)
 
 
 Cool Stuff

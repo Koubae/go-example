@@ -13,3 +13,7 @@ init: .install-deps
 
 run-playground:
 	go run scripts/playground/playground.go
+
+
+workspace-add:
+	go work use ./workspace/$(MODULE)
