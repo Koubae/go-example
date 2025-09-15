@@ -11,7 +11,18 @@ import (
 )
 
 func main() {
-	PalindromicSubstring()
+	// PalindromicSubstring()
+
+	var userName string
+
+	fmt.Println("What is your name?")
+	n, err := fmt.Scanln(&userName)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+	}
+	fmt.Printf("You entered %v characters\n", n)
+
+	fmt.Println("Welcome, " + userName + "!")
 
 }
 
