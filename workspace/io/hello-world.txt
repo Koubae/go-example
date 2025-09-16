@@ -1,0 +1,51 @@
+English — Hello World
+Spanish — Hola Mundo
+Italian — Ciao Mondo
+French — Bonjour le Monde
+German — Hallo Welt
+Portuguese (Brazil) — Olá Mundo
+Dutch — Hallo Wereld
+Danish — Hej Verden
+Swedish — Hej Världen
+Norwegian — Hei Verden
+Finnish — Hei Maailma
+Russian — Привет, мир (Privet, mir)
+Ukrainian — Привіт, світ (Pryvit, svit)
+Polish — Witaj Świecie
+Czech — Ahoj světe
+Slovak — Ahoj svet
+Hungarian — Helló Világ
+Romanian — Salut Lume
+Bulgarian — Здравей, свят (Zdravey, svyat)
+Serbian — Здраво, свете (Zdravo, svete)
+Croatian — Pozdrav svijete
+Greek — Γειά σου Κόσμε (Yia sou Kosme)
+Turkish — Merhaba Dünya
+Arabic (Modern Standard) — مرحبا بالعالم (Marhaban bil-‘ālam)
+Hebrew — שלום עולם (Shalom Olam)
+Persian (Farsi) — سلام دنیا (Salam Donya)
+Hindi — नमस्ते दुनिया (Namaste Duniya)
+Urdu — ہیلو دنیا (Hello Duniya)
+Bengali — হ্যালো ওয়ার্ল্ড (Hyalo Warld)
+Tamil — வணக்கம் உலகம் (Vaṇakkam Ulakam)
+Telugu — హలో వరల్డ్ (Halo Varld)
+Kannada — ಹಲೋ ವಿಶ್ವ (Halō Viśva)
+Malayalam — ഹലോ ലോകം (Halō Lōkam)
+Gujarati — હેલો વર્લ્ડ (Hello Varld)
+Marathi — हॅलो वर्ल्ड (Hælo Varld)
+Punjabi — ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਦੁਨਿਆ (Sat Sri Akaal Duniya)
+Chinese (Simplified) — 你好，世界 (Nǐhǎo, Shìjiè)
+Chinese (Traditional) — 你好，世界 (Nǐhǎo, Shìjiè)
+Japanese — こんにちは世界 (Konnichiwa Sekai)
+Korean — 안녕하세요 세계 (Annyeonghaseyo Segye)
+Vietnamese — Xin chào Thế giới
+Thai — สวัสดีโลก (Sawasdee Lok)
+Lao — ສະບາຍດີ ທົ່ວໂລກ (Sabaidee Thua Lok)
+Khmer (Cambodian) — សួស្តី​ពិភពលោក (Sousdey Pipop Lok)
+Malay — Halo Dunia
+Indonesian — Halo Dunia
+Filipino (Tagalog) — Kamusta Mundo
+Swahili — Hujambo Dunia
+Zulu — Sawubona Mhlaba
+Afrikaans — Hallo Wêreld
+Hawaiian — Aloha Honua
