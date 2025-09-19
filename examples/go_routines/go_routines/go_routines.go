@@ -29,7 +29,7 @@ func simple() {
 	wg.Wait()
 }
 
-func product(wg *sync.WaitGroup, c chan int, v1 int, v2 int) {
+func product(wg *sync.WaitGroup, c chan<- int, v1 int, v2 int) {
 	defer wg.Done()
 	product := v1 * v2
 	c <- product
