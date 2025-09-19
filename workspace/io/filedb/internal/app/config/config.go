@@ -54,3 +54,9 @@ func GetAppDirectory() string {
 	}
 	return appDirectory
 }
+
+func GetStorageDirectory() string {
+	appDirectory := GetAppDirectory()
+	storageDirectory := filepath.Join(appDirectory, "storage")
+	return storageDirectory
+}

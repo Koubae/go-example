@@ -2,5 +2,5 @@ version: 0.0.1-dev
 name: FileDB
 
 database:
-  name: database_1.filedb
+  name: database_1
 
