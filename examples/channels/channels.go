@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/koubae/go-example/examples/channels/pipelines"
 )
 
 func main() {
@@ -24,4 +26,8 @@ func iterateOverChannels() {
 		fmt.Printf("received %s\n", item)
 	}
 
+	// Pipelines @docs https://go.dev/blog/pipelines
+	pipelines.PipelineOneSimple()
+	pipelines.PipelineTwoFanOutFanIn()
+	pipelines.PipelineThreeExplicitCancel()
 }
