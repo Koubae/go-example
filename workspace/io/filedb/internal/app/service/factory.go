@@ -1,5 +1,11 @@
 package service
 
+import "filedb/internal/app/config"
+
 func NewDatabaseService() *DatabaseService {
-	return &DatabaseService{}
+	storageDirPath := config.GetStorageDirectory()
+
+	return &DatabaseService{
+		storageDirPath: storageDirPath,
+	}
 }

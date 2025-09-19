@@ -1,7 +1,6 @@
 package service
 
 import (
-	"filedb/internal/app/config"
 	"filedb/internal/app/model"
 	"filedb/pkg/serialization"
 	"fmt"
@@ -12,84 +11,97 @@ import (
 )
 
 type DatabaseService struct {
+	storageDirPath string
 }
 
 func (s *DatabaseService) CreateDatabase(name string) model.Database {
-	storageDirectory := config.GetStorageDirectory()
+	exists, err := s.DatabaseExists(name)
+	if err != nil {
+		log.Fatalf("Error checking if database %s exists, error %v\n", name, err)
+	}
 
-	databasePath := filepath.Join(storageDirectory, name)
+	databasePath := s.databasePath(name)
+	if exists {
+		log.Printf("Database %s already exists\n", name)
+	} else {
+		err := s._createDatabaseAt(name, databasePath)
+		if err != nil {
+			log.Fatalf("Error creating database %s, error %v\n", name, err)
+		}
+	}
+
+	manifest := s.loadManifestFile(name, err)
+	database := model.Database{
+		Manifest: manifest,
+	}
+	return database
+
+}
+
+func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
+	databasePath := s.databasePath(name)
 	info, err := os.Stat(databasePath)
-	createDatabase := false
 	if err != nil {
 		if os.IsNotExist(err) {
-			createDatabase = true
-			log.Printf("Path %s does not exist\n", databasePath)
-		} else {
-			log.Fatalf("Error while getting info of path %s, error %v\n", databasePath, err)
+			return false, nil
+		}
 
-		}
-	} else {
-		if info.IsDir() {
-			log.Printf("Path %s is a directory\n", databasePath)
-		} else {
-			log.Printf("Path %s is a file\n", databasePath)
-		}
+		log.Printf("Error while getting info of path %s, error %v\n", databasePath, err)
+		return false, DatabaseReadPathError
 	}
 
-	if createDatabase {
-		log.Printf("Creating database %s\n", databasePath)
-		err := os.MkdirAll(databasePath, 0755)
-		if err != nil {
-			log.Fatalf("Error creating database %s, error %v\n", databasePath, err)
-		} else {
-			log.Printf("Database %s created\n", databasePath)
-		}
+	if info.IsDir() {
+		return true, nil
 	}
 
-	manifestPath := filepath.Join(databasePath, "manifest.json")
-	_, err = os.Stat(manifestPath)
-	createManifest := false
+	return false, InvalidDatabaseFormatAtPath
+}
+
+func (s *DatabaseService) _createDatabaseAt(name string, databasePath string) error {
+	log.Printf("Creating database %s (path=%s)\n", name, databasePath)
+
+	err := os.MkdirAll(databasePath, 0755)
 	if err != nil {
-		if !os.IsNotExist(err) {
-			log.Fatalf("Error while getting info of path %s, error %v\n", manifestPath, err)
-		} else {
-			createManifest = true
-			log.Printf("Manifest file %s does not exist\n", manifestPath)
+		return DatabaseWritePathError
+	}
+	log.Printf("Database %s created\n", databasePath)
+
+	manifestPath := s.manifestPath(name)
+	file, err := os.Create(manifestPath)
+	if err != nil {
+		return DatabaseManifestCreateError
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			log.Printf("Error closing manifest file %s, error %v\n", manifestPath, err)
 		}
-	} else {
-		log.Printf("Manifest file %s exists\n", manifestPath)
+	}(file)
+
+	now := time.Now().UTC()
+	manifestContent := model.Manifest{
+		Name:    name,
+		Created: now,
+		Updated: now,
 	}
 
-	if createManifest {
-		file, err := os.Create(manifestPath)
-		if err != nil {
-			log.Fatalf("Error creating manifest file %s, error %v\n", manifestPath, err)
-		}
-		defer func(file *os.File) {
-			err := file.Close()
-			if err != nil {
-				log.Fatalf("Error closing manifest file %s, error %v\n", manifestPath, err)
-			}
-		}(file)
-
-		created := time.Now().UTC()
-		manifestContent := model.Manifest{
-			Name:    name,
-			Created: created,
-			Updated: created,
-		}
-
-		jsonContent, err := serialization.JSONSerializePretty[model.Manifest](manifestContent)
-		if err != nil {
-			log.Fatalf("Error marshalling manifest content, error %v\n", err)
-		}
-		_, err = file.Write(jsonContent)
-		if err != nil {
-			log.Fatalf("Error writing manifest content to file %s, error %v\n", manifestPath, err)
-		}
-		log.Printf("Manifest file %s created\n", manifestPath)
+	jsonContent, err := serialization.JSONSerializePretty[model.Manifest](manifestContent)
+	if err != nil {
+		return DatabaseJSONManifestSerializationError
 	}
 
+	_, err = file.Write(jsonContent)
+	if err != nil {
+		return DatabaseManifestWriteError
+	}
+
+	log.Printf("Manifest file for database %s at path %s created\n", name, manifestPath)
+	return nil
+
+}
+
+func (s *DatabaseService) loadManifestFile(name string, err error) model.Manifest {
+	manifestPath := s.manifestPath(name)
 	data, err := os.ReadFile(manifestPath)
 	if err != nil {
 		log.Fatalf("Error reading manifest file %s, error %v\n", manifestPath, err)
@@ -103,10 +115,13 @@ func (s *DatabaseService) CreateDatabase(name string) model.Database {
 	}
 
 	fmt.Printf("Loaded manifest: %+v\n", manifest)
+	return manifest
+}
 
-	database := model.Database{
-		Manifest: manifest,
-	}
-	return database
+func (s *DatabaseService) databasePath(name string) string {
+	return filepath.Join(s.storageDirPath, name)
+}
 
+func (s *DatabaseService) manifestPath(name string) string {
+	return filepath.Join(s.databasePath(name), "manifest.json")
 }
