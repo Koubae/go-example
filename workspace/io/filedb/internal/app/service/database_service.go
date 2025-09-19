@@ -20,11 +20,10 @@ func (s *DatabaseService) CreateDatabase(name string) model.Database {
 		log.Fatalf("Error checking if database %s exists, error %v\n", name, err)
 	}
 
-	databasePath := s.databasePath(name)
 	if exists {
 		log.Printf("Database %s already exists\n", name)
 	} else {
-		err := s._createDatabaseAt(name, databasePath)
+		err := s._createDatabaseAt(name)
 		if err != nil {
 			log.Fatalf("Error creating database %s, error %v\n", name, err)
 		}
@@ -57,7 +56,8 @@ func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
 	return false, InvalidDatabaseFormatAtPath
 }
 
-func (s *DatabaseService) _createDatabaseAt(name string, databasePath string) error {
+func (s *DatabaseService) _createDatabaseAt(name string) error {
+	databasePath := s.databasePath(name)
 	log.Printf("Creating database %s (path=%s)\n", name, databasePath)
 
 	err := os.MkdirAll(databasePath, 0755)
@@ -66,6 +66,15 @@ func (s *DatabaseService) _createDatabaseAt(name string, databasePath string) er
 	}
 	log.Printf("Database %s created\n", databasePath)
 
+	err = s._createManifest(name, err)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (s *DatabaseService) _createManifest(name string, err error) error {
 	manifestPath := s.manifestPath(name)
 	file, err := os.Create(manifestPath)
 	if err != nil {
@@ -97,7 +106,6 @@ func (s *DatabaseService) _createDatabaseAt(name string, databasePath string) er
 
 	log.Printf("Manifest file for database %s at path %s created\n", name, manifestPath)
 	return nil
-
 }
 
 func (s *DatabaseService) loadManifestFile(name string, err error) model.Manifest {
