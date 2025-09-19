@@ -10,4 +10,7 @@ var (
 	DatabaseManifestCreateError            = errors.New("DATABASE_MANIFEST_CREATE_ERROR: Error while creating database manifest")
 	DatabaseJSONManifestSerializationError = errors.New("DATABASE_JSON_MANIFEST_SERIALIZATION_ERROR: Error while serializing database manifest")
 	DatabaseManifestWriteError             = errors.New("DATABASE_MANIFEST_WRITE_ERROR: Error while writing database manifest")
+	DatabaseManifestLoadError              = errors.New("DATABASE_MANIFEST_LOAD_ERROR: Error while loading database manifest")
+
+	DatabaseDuplicate = errors.New("DATABASE_DUPLICATE: Database already exists")
 )

@@ -10,7 +10,10 @@ func App() {
 	conf := config.LoadConfigurations()
 	databaseService := service.NewDatabaseService()
 
-	database := databaseService.CreateDatabase(conf.DatabaseConfig.Name)
+	database, err := databaseService.CreateDatabaseIfNotExists(conf.DatabaseConfig.Name)
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.Printf("Database: %+v\n", database)
 
 }

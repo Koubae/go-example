@@ -14,27 +14,38 @@ type DatabaseService struct {
 	storageDirPath string
 }
 
-func (s *DatabaseService) CreateDatabase(name string) model.Database {
+func (s *DatabaseService) CreateDatabaseIfNotExists(name string) (*model.Database, error) {
+	return s.CreateDatabase(name, false)
+
+}
+
+func (s *DatabaseService) CreateDatabase(name string, raiseIfExists bool) (*model.Database, error) {
 	exists, err := s.DatabaseExists(name)
 	if err != nil {
-		log.Fatalf("Error checking if database %s exists, error %v\n", name, err)
+		return nil, err
 	}
 
 	if exists {
 		log.Printf("Database %s already exists\n", name)
+		if raiseIfExists {
+			return nil, DatabaseDuplicate
+		}
 	} else {
 		err := s._createDatabaseAt(name)
 		if err != nil {
-			log.Fatalf("Error creating database %s, error %v\n", name, err)
+			return nil, err
 		}
 	}
 
-	manifest := s.loadManifestFile(name, err)
-	database := model.Database{
-		Manifest: manifest,
+	manifest, err := s.loadManifestFile(name, err)
+	if err != nil {
+		return nil, err
 	}
-	return database
 
+	database := &model.Database{
+		Manifest: *manifest,
+	}
+	return database, nil
 }
 
 func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
@@ -108,22 +119,24 @@ func (s *DatabaseService) _createManifest(name string, err error) error {
 	return nil
 }
 
-func (s *DatabaseService) loadManifestFile(name string, err error) model.Manifest {
+func (s *DatabaseService) loadManifestFile(name string, err error) (*model.Manifest, error) {
 	manifestPath := s.manifestPath(name)
 	data, err := os.ReadFile(manifestPath)
 	if err != nil {
-		log.Fatalf("Error reading manifest file %s, error %v\n", manifestPath, err)
+		log.Printf("Error reading manifest file %s, error %v\n", manifestPath, err)
+		return nil, DatabaseManifestLoadError
 	}
 	log.Printf("Manifest file %s content: %s\n", manifestPath, string(data))
 
 	var manifest model.Manifest
 	err = serialization.JSONDeserialize(data, &manifest)
 	if err != nil {
-		log.Fatalf("Error unmarshalling manifest file %s, error %v\n", manifestPath, err)
+		log.Printf("Error unmarshalling manifest file %s, error %v\n", manifestPath, err)
+		return nil, DatabaseManifestLoadError
 	}
 
 	fmt.Printf("Loaded manifest: %+v\n", manifest)
-	return manifest
+	return &manifest, nil
 }
 
 func (s *DatabaseService) databasePath(name string) string {
