@@ -1,9 +1,9 @@
 package service
 
 import (
-	"encoding/json"
 	"filedb/internal/app/config"
 	"filedb/internal/app/model"
+	"filedb/pkg/serialization"
 	"fmt"
 	"log"
 	"os"
@@ -79,7 +79,7 @@ func (s *DatabaseService) CreateDatabase(name string) model.Database {
 			Updated: created,
 		}
 
-		jsonContent, err := json.MarshalIndent(manifestContent, "", "	")
+		jsonContent, err := serialization.JSONSerializePretty[model.Manifest](manifestContent)
 		if err != nil {
 			log.Fatalf("Error marshalling manifest content, error %v\n", err)
 		}
@@ -97,7 +97,7 @@ func (s *DatabaseService) CreateDatabase(name string) model.Database {
 	log.Printf("Manifest file %s content: %s\n", manifestPath, string(data))
 
 	var manifest model.Manifest
-	err = json.Unmarshal(data, &manifest)
+	err = serialization.JSONDeserialize(data, &manifest)
 	if err != nil {
 		log.Fatalf("Error unmarshalling manifest file %s, error %v\n", manifestPath, err)
 	}
