@@ -8,9 +8,82 @@ import (
 
 func main() {
 	// exampleContextWithCancelAndIterateOverChannel()
-	contextWithValue()
+	// contextWithValue()
+	// manualCancel()
+	timeout()
 }
 
+func dummyWorker1(ctx context.Context) {
+	name := "dummyWorker1"
+	fmt.Printf("%s started\n", name)
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Printf("%s topped, ctx error: %v\n", name, ctx.Err())
+			return
+		default:
+			fmt.Printf("%s working...\n", name)
+			time.Sleep(500 * time.Millisecond)
+		}
+	}
+}
+
+func dummyWorker2WithTimeout(ctx context.Context, timeout time.Duration) {
+	name := "dummyWorker2WithTimeout"
+	fmt.Printf("%s started\n", name)
+
+	select {
+	case <-time.After(timeout):
+		fmt.Printf("%s Task has finished its work\n", name)
+	case <-ctx.Done():
+		fmt.Printf("%s Conext Timeouted out error: %v\n", name, ctx.Err())
+	}
+}
+
+/*
+	================================================================================
+			Simple Examples
+	================================================================================
+
+*/
+
+// -------------------------------------------------
+// Cancel Manually
+
+func manualCancel() {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go dummyWorker1(ctx)
+
+	time.Sleep(2 * time.Second)
+	cancel() // stop worker
+	time.Sleep(1 * time.Second)
+	fmt.Println("Done")
+}
+
+// -------------------------------------------------
+// Timeout
+func timeout() {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+
+	// INCREASE timeoutCaller and DECREASE timeoutWorker: worker will complete its work before timeout
+	// DECREASE timeoutCaller and INCREASE timeoutWorker: worker will time out
+	timeoutCaller := 1 * time.Second
+	timeoutWorker := 3 * time.Second
+
+	go func() {
+		defer cancel()
+		go dummyWorker2WithTimeout(ctx, timeoutWorker)
+		time.Sleep(timeoutCaller)
+	}()
+
+	time.Sleep(3 * time.Second)
+	fmt.Println("Done")
+
+}
+
+// -------------------------------------------------
+// WithValue
 func contextWithValue() {
 	type customKeyT string
 
