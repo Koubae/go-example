@@ -20,6 +20,6 @@ func App() {
 	tableName := "users" // todo make more tables
 	tableService := service.NewTableService(database.Path(), tableName)
 
-	fmt.Println(tableService)
+	fmt.Println(tableService, tableService.TableFileName())
 
 }

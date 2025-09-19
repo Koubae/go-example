@@ -75,6 +75,16 @@ func (s *DatabaseService) _createDatabaseAt(name string) error {
 	}
 	log.Printf("Database %s created\n", databasePath)
 
+	subDirs := [...]string{"tables"}
+	log.Printf("Creating subdirectories %+v\n", subDirs)
+	for _, subDir := range subDirs {
+		err := os.MkdirAll(filepath.Join(databasePath, subDir), 0755)
+		if err != nil {
+			return DatabaseWritePathSubDirError
+		}
+		log.Printf("Subdirectory %s created\n", subDir)
+	}
+
 	err = s._createManifest(name, err)
 	if err != nil {
 		return err
