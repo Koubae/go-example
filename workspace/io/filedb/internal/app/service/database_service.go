@@ -42,9 +42,7 @@ func (s *DatabaseService) CreateDatabase(name string, raiseIfExists bool) (*mode
 		return nil, err
 	}
 
-	database := &model.Database{
-		Manifest: *manifest,
-	}
+	database := model.NewDatabase(*manifest, s.databasePath(name))
 	return database, nil
 }
 
@@ -126,7 +124,7 @@ func (s *DatabaseService) loadManifestFile(name string, err error) (*model.Manif
 		log.Printf("Error reading manifest file %s, error %v\n", manifestPath, err)
 		return nil, DatabaseManifestLoadError
 	}
-	log.Printf("Manifest file %s content: %s\n", manifestPath, string(data))
+	log.Printf("Manifest file %s content: \n%s\n", manifestPath, string(data))
 
 	var manifest model.Manifest
 	err = serialization.JSONDeserialize(data, &manifest)

@@ -11,7 +11,7 @@ func JSONSerialize[T any](object T) ([]byte, error) {
 }
 
 func JSONSerializePretty[T any](object T) ([]byte, error) {
-	body, err := json.MarshalIndent(object, "", "	")
+	body, err := json.MarshalIndent(object, "", "    ")
 	if err != nil {
 		return nil, err
 	}

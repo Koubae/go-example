@@ -10,4 +10,16 @@ type Manifest struct {
 
 type Database struct {
 	Manifest
+	path string
+}
+
+func (d Database) Path() string {
+	return d.path
+}
+
+func NewDatabase(manifest Manifest, path string) *Database {
+	return &Database{
+		Manifest: manifest,
+		path:     path,
+	}
 }
