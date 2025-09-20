@@ -96,16 +96,12 @@ func (s *DatabaseService) _createDatabase(name string) error {
 
 func (s *DatabaseService) _createManifest(name string, err error) error {
 	manifestPath := s.manifestPath(name)
-	file, err := os.Create(manifestPath)
+
+	file, closer, err := serialization.CreateFileWithSafeCloseDeferrable(manifestPath)
 	if err != nil {
 		return DatabaseManifestCreateError
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Printf("Error closing manifest file %s, error %v\n", manifestPath, err)
-		}
-	}(file)
+	defer closer()
 
 	now := time.Now().UTC()
 	manifestContent := model.Manifest{

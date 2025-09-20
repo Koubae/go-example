@@ -75,16 +75,12 @@ func (s *TableService) _createTable() error {
 	tablePath := s.tablePath()
 	log.Printf("Creating table %s (path=%s)\n", s.table, tablePath)
 
-	file, err := os.Create(tablePath)
+	file, closer, err := serialization.CreateFileWithSafeCloseDeferrable(tablePath)
 	if err != nil {
+		log.Printf("ERROR: %v\n", err)
 		return TableFileCreateError
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Printf("Error closing manifest file %s, error %v\n", tablePath, err)
-		}
-	}(file)
+	defer closer()
 
 	now := time.Now().UTC()
 	manifest := model.Manifest{
@@ -116,6 +112,7 @@ func (s *TableService) loadTableManifest() (*model.Table[any], error) {
 
 	file, closer, err := serialization.OpenFileWithSafeCloseDeferrable(tablePath)
 	if err != nil {
+		log.Printf("ERROR: %v\n", err)
 		return nil, err
 	}
 	defer closer()
