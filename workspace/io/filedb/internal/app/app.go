@@ -1,11 +1,33 @@
 package app
 
 import (
-	configLoader "filedb/internal/app/config"
+	"filedb/internal/app/config"
+	"filedb/internal/app/service"
 	"fmt"
+	"log"
 )
 
 func App() {
-	var config = configLoader.LoadConfigurations()
-	fmt.Printf("configFile:%v\n", config)
+	conf := config.LoadConfigurations()
+	databaseService := service.NewDatabaseService()
+
+	// 1) Create Database
+	database, err := databaseService.CreateDatabaseIfNotExists(conf.DatabaseConfig.Name)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Database: %+v\n", database)
+
+	// 2) Create Table
+	tableName := "users" // todo make more tables
+	tableService := service.NewTableService(database.Path(), tableName)
+
+	fmt.Println(tableService, tableService.TableFileName())
+
+	table, err := tableService.CreateTableIfNotExists()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Table: %+v\n", table)
+
 }

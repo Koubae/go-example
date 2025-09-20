@@ -1,18 +1,24 @@
 package config
 
 import (
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/yaml.v3"
 )
 
 const configDirectoryName string = "config"
 const configFilename string = "config.yml"
 
+type DatabaseConfig struct {
+	Name string `yaml:"name"`
+}
+
 type ConfigurationSchema struct {
-	Version string `yaml:"version"`
-	Name    string `yaml:"name"`
+	Version        string `yaml:"version"`
+	Name           string `yaml:"name"`
+	DatabaseConfig `yaml:"database"`
 }
 
 // config ConfigSchema
@@ -21,7 +27,7 @@ type ConfigurationSchema struct {
 var config ConfigurationSchema
 
 func LoadConfigurations() ConfigurationSchema {
-	var appDirectory string = GetAppDirectory()
+	appDirectory := GetAppDirectory()
 	configPath := filepath.Join(appDirectory, configDirectoryName, configFilename)
 	configFile, err := os.ReadFile(configPath)
 	if err != nil {
@@ -44,7 +50,13 @@ func GetConfig() ConfigurationSchema {
 func GetAppDirectory() string {
 	appDirectory, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Error getting current working directory: %s\n", err)
+		log.Fatalf("Error getting current working directory: %s\n", err)
 	}
 	return appDirectory
+}
+
+func GetStorageDirectory() string {
+	appDirectory := GetAppDirectory()
+	storageDirPath := filepath.Join(appDirectory, "storage")
+	return storageDirPath
 }
