@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const AskInput = false
+
 func main() {
 
 	sequence := getSequenceInput()
@@ -19,7 +21,10 @@ func main() {
 }
 
 func getSequenceInput() []int {
-	defaultInput := [...]int{20, 30, 10, 40, 50, -1, -2, 3, 4, 500, -2, 0, 1, 300, 200}
+	defaultInput := [...]int{20, 30, 999, 33, 44, 10, 40, 50, -1, -2, 3, 4, 500, 1, 3, -2, 0, 1, 300, 200, 8, 10}
+	if !AskInput {
+		return defaultInput[:]
+	}
 	fmt.Printf(
 		"Enter sequence of numbers, separated by space or just press enter to use a default sequence: %v\n",
 		defaultInput,
@@ -63,7 +68,9 @@ func BubbleSort(sequence []int) {
 			left := sequence[j]
 			right := sequence[j+1]
 			if left > right {
-				Swap(sequence, j)
+				sequence[j] = right
+				sequence[j+1] = left
+				// Swap(sequence, j)
 				swapped = true
 			}
 		}
