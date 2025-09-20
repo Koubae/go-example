@@ -22,4 +22,10 @@ func App() {
 
 	fmt.Println(tableService, tableService.TableFileName())
 
+	table, err := tableService.CreateTableIfNotExists()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Table: %+v\n", table)
+
 }

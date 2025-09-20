@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"filedb/internal/app/model"
 	"filedb/pkg/serialization"
 	"fmt"
@@ -31,7 +32,7 @@ func (s *DatabaseService) CreateDatabase(name string, raiseIfExists bool) (*mode
 			return nil, DatabaseDuplicate
 		}
 	} else {
-		err := s._createDatabaseAt(name)
+		err := s._createDatabase(name)
 		if err != nil {
 			return nil, err
 		}
@@ -50,7 +51,7 @@ func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
 	databasePath := s.databasePath(name)
 	info, err := os.Stat(databasePath)
 	if err != nil {
-		if os.IsNotExist(err) {
+		if errors.Is(err, os.ErrNotExist) {
 			return false, nil
 		}
 
@@ -65,7 +66,7 @@ func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
 	return false, InvalidDatabaseFormatAtPath
 }
 
-func (s *DatabaseService) _createDatabaseAt(name string) error {
+func (s *DatabaseService) _createDatabase(name string) error {
 	databasePath := s.databasePath(name)
 	log.Printf("Creating database %s (path=%s)\n", name, databasePath)
 
@@ -118,8 +119,7 @@ func (s *DatabaseService) _createManifest(name string, err error) error {
 		return DatabaseJSONManifestSerializationError
 	}
 
-	_, err = file.Write(jsonContent)
-	if err != nil {
+	if _, err = file.Write(jsonContent); err != nil {
 		return DatabaseManifestWriteError
 	}
 

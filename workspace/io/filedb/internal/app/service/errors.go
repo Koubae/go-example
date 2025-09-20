@@ -14,4 +14,11 @@ var (
 	DatabaseManifestLoadError              = errors.New("DATABASE_MANIFEST_LOAD_ERROR: Error while loading database manifest")
 
 	DatabaseDuplicate = errors.New("DATABASE_DUPLICATE: Database already exists")
+
+	TableReadPathError          = errors.New("TABLE_READ_PATH_ERROR: Error while reading table path")
+	TableFileCreateError        = errors.New("TABLE_FILE_CREATE_ERROR: Error while creating table JSON file")
+	TableJSONSerializationError = errors.New("TABLE_JSON_SERIALIZATION_ERROR: Error while serializing table JSON file")
+	TableJSONWriteError         = errors.New("TABLE_JSON_WRITE_ERROR: Error while writing table JSON file")
+
+	TableDuplicate = errors.New("TABLE_DUPLICATE: Table already exists")
 )
