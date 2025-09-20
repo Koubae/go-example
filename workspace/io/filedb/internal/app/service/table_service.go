@@ -113,22 +113,17 @@ func (s *TableService) _createTable() error {
 func (s *TableService) loadTableManifest() (*model.Table[any], error) {
 	tablePath := s.tablePath()
 	log.Printf("Creating table %s (path=%s)\n", s.table, tablePath)
-	file, err := os.Open(tablePath)
-	if err != nil {
-		return nil, err // todo make specific erroor
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Printf("Error closing manifest file %s, error %v\n", tablePath, err)
-		}
-	}(file)
 
-	decoder := json.NewDecoder(file)
+	file, closer, err := serialization.OpenFileWithSafeCloseDeferrable(tablePath)
+	if err != nil {
+		return nil, err
+	}
+	defer closer()
 
 	// ---------------------------
 	// Read root value and validate is a JSON object {} (It could be an Array [])
 	// ---------------------------
+	decoder := json.NewDecoder(file)
 	t, err := decoder.Token()
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("invalid JSON error while reading token, error: %v", err))
