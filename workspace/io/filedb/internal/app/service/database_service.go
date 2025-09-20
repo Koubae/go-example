@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"filedb/internal/app/model"
 	"filedb/pkg/serialization"
 	"fmt"
@@ -31,7 +32,7 @@ func (s *DatabaseService) CreateDatabase(name string, raiseIfExists bool) (*mode
 			return nil, DatabaseDuplicate
 		}
 	} else {
-		err := s._createDatabaseAt(name)
+		err := s._createDatabase(name)
 		if err != nil {
 			return nil, err
 		}
@@ -42,9 +43,7 @@ func (s *DatabaseService) CreateDatabase(name string, raiseIfExists bool) (*mode
 		return nil, err
 	}
 
-	database := &model.Database{
-		Manifest: *manifest,
-	}
+	database := model.NewDatabase(*manifest, s.databasePath(name))
 	return database, nil
 }
 
@@ -52,7 +51,7 @@ func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
 	databasePath := s.databasePath(name)
 	info, err := os.Stat(databasePath)
 	if err != nil {
-		if os.IsNotExist(err) {
+		if errors.Is(err, os.ErrNotExist) {
 			return false, nil
 		}
 
@@ -67,7 +66,7 @@ func (s *DatabaseService) DatabaseExists(name string) (bool, error) {
 	return false, InvalidDatabaseFormatAtPath
 }
 
-func (s *DatabaseService) _createDatabaseAt(name string) error {
+func (s *DatabaseService) _createDatabase(name string) error {
 	databasePath := s.databasePath(name)
 	log.Printf("Creating database %s (path=%s)\n", name, databasePath)
 
@@ -76,6 +75,16 @@ func (s *DatabaseService) _createDatabaseAt(name string) error {
 		return DatabaseWritePathError
 	}
 	log.Printf("Database %s created\n", databasePath)
+
+	subDirs := [...]string{"tables"}
+	log.Printf("Creating subdirectories %+v\n", subDirs)
+	for _, subDir := range subDirs {
+		err := os.MkdirAll(filepath.Join(databasePath, subDir), 0755)
+		if err != nil {
+			return DatabaseWritePathSubDirError
+		}
+		log.Printf("Subdirectory %s created\n", subDir)
+	}
 
 	err = s._createManifest(name, err)
 	if err != nil {
@@ -87,16 +96,12 @@ func (s *DatabaseService) _createDatabaseAt(name string) error {
 
 func (s *DatabaseService) _createManifest(name string, err error) error {
 	manifestPath := s.manifestPath(name)
-	file, err := os.Create(manifestPath)
+
+	file, closer, err := serialization.CreateFileWithSafeCloseDeferrable(manifestPath)
 	if err != nil {
 		return DatabaseManifestCreateError
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Printf("Error closing manifest file %s, error %v\n", manifestPath, err)
-		}
-	}(file)
+	defer closer()
 
 	now := time.Now().UTC()
 	manifestContent := model.Manifest{
@@ -110,8 +115,7 @@ func (s *DatabaseService) _createManifest(name string, err error) error {
 		return DatabaseJSONManifestSerializationError
 	}
 
-	_, err = file.Write(jsonContent)
-	if err != nil {
+	if _, err = file.Write(jsonContent); err != nil {
 		return DatabaseManifestWriteError
 	}
 
@@ -126,7 +130,7 @@ func (s *DatabaseService) loadManifestFile(name string, err error) (*model.Manif
 		log.Printf("Error reading manifest file %s, error %v\n", manifestPath, err)
 		return nil, DatabaseManifestLoadError
 	}
-	log.Printf("Manifest file %s content: %s\n", manifestPath, string(data))
+	log.Printf("Manifest file %s content: \n%s\n", manifestPath, string(data))
 
 	var manifest model.Manifest
 	err = serialization.JSONDeserialize(data, &manifest)
