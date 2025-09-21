@@ -85,7 +85,13 @@ func SimpleServerClientEcho() {
 	server := func(wg *sync.WaitGroup) {
 		defer wg.Done()
 
-		l, err := net.Listen("tcp", serverAddr)
+		addr, err := net.ResolveTCPAddr("tcp", serverAddr)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// l, err := net.Listen("tcp", serverAddr)
+		l, err := net.ListenTCP("tcp", addr)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -94,14 +100,16 @@ func SimpleServerClientEcho() {
 		log.Printf("{{SERVER}} Server started listening on %s\n", serverAddr)
 
 		for {
-			conn, err := l.Accept()
+			// conn, err := l.Accept()
+			conn, err := l.AcceptTCP()
 			if err != nil {
 				log.Fatal(err)
 			}
 
 			log.Printf("{{SERVER}} New connection from %s\n", conn.RemoteAddr())
 
-			go func(c net.Conn) {
+			// go func(c net.Conn) {
+			go func(c *net.TCPConn) {
 				defer closeConn(c)
 				_, err := io.Copy(c, c) // Echo incoming data
 				if err != nil {
@@ -121,7 +129,7 @@ func SimpleServerClientEcho() {
 		}
 		defer closeConn(conn)
 
-		log.Printf("{{CLIENT}} Connected to %s\n", serverAddr)
+		log.Printf("{{CLIENT}} (%s) Connected to %s\n", conn.LocalAddr().String(), conn.RemoteAddr().String())
 
 		if _, err := conn.Write([]byte("Hello World\n")); err != nil {
 			log.Fatal(err)
