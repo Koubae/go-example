@@ -14,6 +14,8 @@ Git repositories/sources; this project is just to show what a Go workspace may l
 
 Also, of course, contains actual simple Go / Started examples. 
 
+Check also the official: **[Go example projects (github.com/golang)](https://github.com/golang/example)**
+
 
 ### Quickstart
 
