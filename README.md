@@ -145,3 +145,10 @@ Courses & Learning
 * [C, Go, and C++: A Comprehensive Introduction to Programming Specialization](https://www.coursera.org/specializations/c-go-c-plus-plus)
 * [Developing a REST API with Go and Cloud Run](https://www.coursera.org/projects/googlecloud-developing-a-rest-api-with-go-and-cloud-run-tdech)
 * [Golang for Beginners: Data Types, Functions, and Packages](https://www.coursera.org/projects/golang-beginners-data-types-functions-packages)
+
+
+### Youtube
+
+* [Complete Backend Engineering Course in Go](https://www.youtube.com/watch?v=h3fqD6IprIA&t=591s)
+    * [sikozonpc/GopherSocial](https://github.com/sikozonpc/GopherSocial)
+    * [Self Made Engineer](https://www.selfmadeengineer.com/)
