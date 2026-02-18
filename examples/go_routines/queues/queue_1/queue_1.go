@@ -72,7 +72,7 @@ type RequestPool struct {
 
 func NewRequestPool(workers int, job Job) *RequestPool {
 	// NOTE:
-	// I've confused what I meant yesterday. we need to have a HIGHER buffer in the request pool in order to
+	// We need to have a HIGHER buffer in the request pool in order to
 	// avoid losing requests | effectively this is the "Max request waiting per worker" which is something commonly seen
 	// in a web server. we have I workers and J max idle requests.
 	pool := make(chan *Request, MaxRequestIdlePerWorker)
