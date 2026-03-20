@@ -14,6 +14,13 @@ init: .install-deps
 run-playground:
 	go run scripts/playground/playground.go
 
+workspace-sync:
+	@go work sync
 
 workspace-add:
 	go work use ./workspace/$(MODULE)
+
+
+run-clean-net-http:
+	@go run ./workspace/web/clean-net-http/cmd/main.go  
+
