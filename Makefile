@@ -22,5 +22,5 @@ workspace-add:
 
 
 run-clean-net-http:
-	@go run ./workspace/web/clean-net-http/cmd/main.go  
+	export DATABASE_URL="postgres://admin:admin@localhost:5432/clean_net_http" && go run ./workspace/web/clean-net-http/cmd  
 
