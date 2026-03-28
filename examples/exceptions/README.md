@@ -12,3 +12,14 @@ Libraries
 * [golang.org/x/sync/errgroup](https://pkg.go.dev/golang.org/x/sync/errgroup)
 
 * (legacy) [github.com/pkg/errors](https://github.com/pkg/errors)
+
+#### To check
+
+- connectRPC not connectgrpc. different thing
+
+* https://pkg.go.dev/google.golang.org/grpc/status
+* https://connectrpc.com/
+
+Opentelemtry https://opentelemetry.io/docs/languages/go/getting-started/
+
+
