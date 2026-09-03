@@ -1,0 +1,18 @@
+{
+    // https://www.youtube.com/watch?v=pvfESSAbbts
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+        }
+    },
+    "[go.mod]": {
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+        }
+    },
+    "gopls": {
+        "ui.semanticTokens": false
+    }
+}
