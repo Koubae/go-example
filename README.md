@@ -2,7 +2,8 @@ go-example
 ==========
 
 
-_Go Example Workspace with multiple GoLang Recipes from simple one, http servers and more_
+
+_Go Example Workspace with multiple GoLang Recipes from simple one, http servers and more_ 
 
 * [Programming-CookBook (GO)](https://github.com/Koubae/Programming-CookBook/tree/master/Programming%20Languages/GO)
 * [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
