@@ -10,8 +10,12 @@
             "request": "launch",
             "mode": "debug",
             "program": "${fileDirname}",
-             "cwd": "${workspaceFolder}",
-               "console": "integratedTerminal"
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "LANG": "en"
+            }
         },
         {
             "name": "Test: Current File",
@@ -20,8 +24,10 @@
             "mode": "test",
             "program": "${fileDirname}",
             "cwd": "${workspaceFolder}",
-             // "args": ["-test.v", "&&", "sleep", "5000"],
-             "args": ["-test.v"],
+            // "args": ["-test.v", "&&", "sleep", "5000"],
+            "args": [
+                "-test.v"
+            ],
             "console": "integratedTerminal",
             "showLog": true,
             "trace": "verbose"

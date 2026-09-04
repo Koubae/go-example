@@ -14,5 +14,10 @@
     },
     "gopls": {
         "ui.semanticTokens": false
-    }
+    },
+    // Additional configs
+    "makefile.configureOnOpen": false,
+    "go.testEnvFile": "${workspaceFolder}/.vscode/.env",
+
+
 }
