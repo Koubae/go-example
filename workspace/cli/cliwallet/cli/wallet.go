@@ -37,6 +37,8 @@ var cliWalletCommandDeposit = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
+		// TODO: Add in a busine logic
+
 		amount := args[0]
 		money, err := logic.ParseMoney(amount, model.EUR)
 		if err != nil {
@@ -57,6 +59,8 @@ var cliWalletCommandWithdraw = &cobra.Command{
 	Short: "Withdraw funds from wallet",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		// TODO: Add in a busine logic
 
 		amount := args[0]
 		money, err := logic.ParseMoney(amount, model.EUR)
