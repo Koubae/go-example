@@ -1,0 +1,27 @@
+services:
+  db-postgres:
+    image: postgres:16-alpine
+    container_name: cliwallet-db-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - cliwallet
+    environment:
+      POSTGRES_DB: cli_wallet
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d cli_wallet" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres-data:
+
+networks:
+  cliwallet:
