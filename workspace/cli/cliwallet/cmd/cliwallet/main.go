@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cliwallet/internal/cli"
+	"cliwallet/cli"
 	"fmt"
 	"os"
 )
