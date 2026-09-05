@@ -9,6 +9,12 @@ cliwallet
 Quickstart
 ----------
 
+**Install Deps & tools** 
+```bash
+make init
+``` 
+
+
 **Bring DB Up**
 
 

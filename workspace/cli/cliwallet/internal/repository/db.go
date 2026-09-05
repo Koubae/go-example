@@ -2,6 +2,7 @@ package repository
 
 import (
 	"cliwallet/internal/record"
+	"errors"
 	"fmt"
 
 	"gorm.io/driver/postgres"
@@ -9,8 +10,16 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	ErrRecordDuplicate = errors.New("record already exists")
+	ErrRecordNotFound  = errors.New("record not found")
+	ErrInvalidRef      = errors.New("invalid reference")
+)
+
 func DBSQLite() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+		TranslateError: true,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +54,9 @@ func DBPostgres(config PostgresConfig) (*gorm.DB, error) {
 		config.SSLMode,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		TranslateError: true,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -75,4 +86,20 @@ func MigrateAll(db *gorm.DB) error {
 	}
 
 	return nil
+}
+
+func translateError(err error) error {
+	switch {
+	case errors.Is(err, gorm.ErrDuplicatedKey):
+		return fmt.Errorf("%w: %v", ErrRecordDuplicate, err)
+
+	case errors.Is(err, gorm.ErrForeignKeyViolated):
+		return fmt.Errorf("%w: %v", ErrInvalidRef, err)
+
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		return ErrRecordNotFound
+
+	default:
+		return err
+	}
 }
