@@ -1,5 +1,8 @@
 
 
+run-cli-wallet:
+	go run ./cmd/cliwallet $(ARGS)
 
-run:
-	go run cmd/cliwallet/main.go
+run-wallet-server:
+	go run ./cmd/server/main.go $(ARGS)
+

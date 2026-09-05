@@ -1,5 +1,14 @@
 package main
 
+import (
+	"cliwallet/internal/cli"
+	"fmt"
+	"os"
+)
+
 func main() {
-	println("Hello, World!")
+	if err := cli.Cli.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
