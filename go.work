@@ -3,6 +3,7 @@ go 1.26.1
 use (
 	.
 	./workspace/algorithms
+	./workspace/cli/cliwallet
 	./workspace/dir1/dir2/dir3/mymodule
 	./workspace/hello
 	./workspace/io/filedb
