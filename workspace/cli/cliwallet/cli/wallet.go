@@ -26,6 +26,7 @@ var cliWalletCommandShow = &cobra.Command{
 	Short: "Show wallet information",
 	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// TODO: replace with an http request .. the cli code should leave "outside" of the wallet-server
 		println("Wallet information: <show>")
 		return nil
 	},
@@ -38,6 +39,7 @@ var cliWalletCommandDeposit = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		// TODO: Add in a busine logic
+		// TODO: replace with an http request .. the cli code should leave "outside" of the wallet-server
 
 		amount := args[0]
 		money, err := logic.ParseMoney(amount, model.EUR)
@@ -61,6 +63,7 @@ var cliWalletCommandWithdraw = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		// TODO: Add in a busine logic
+		// TODO: replace with an http request .. the cli code should leave "outside" of the wallet-server
 
 		amount := args[0]
 		money, err := logic.ParseMoney(amount, model.EUR)
