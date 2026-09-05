@@ -5,11 +5,13 @@ import (
 	"cliwallet/internal/record"
 	"context"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Account interface {
 	Create(ctx context.Context, account model.Account) (model.Account, error)
+	GetByID(ctx context.Context, id uuid.UUID) (model.Account, error)
 }
 
 type account struct {
@@ -30,4 +32,14 @@ func (r *account) Create(ctx context.Context, account model.Account) (model.Acco
 	}
 
 	return record.ToModel(), nil
+}
+
+func (r *account) GetByID(ctx context.Context, id uuid.UUID) (model.Account, error) {
+	var record *record.Account
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&record).Error; err != nil {
+		return model.Account{}, translateError(err)
+	}
+
+	return record.ToModel(), nil
+
 }
