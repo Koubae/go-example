@@ -53,8 +53,8 @@ type Wallet struct {
 }
 
 // NewWallet -- for writes. Should not leak outside repository
-func NewWallet(m model.Wallet) Wallet {
-	return Wallet{
+func NewWallet(m model.Wallet) *Wallet {
+	return &Wallet{
 		AccountID: m.AccountID,
 		Name:      m.Name,
 		Currency:  m.Currency,
@@ -62,7 +62,7 @@ func NewWallet(m model.Wallet) Wallet {
 	}
 }
 
-func (r Wallet) ToModel() model.Wallet {
+func (r *Wallet) ToModel() model.Wallet {
 	return model.Wallet{
 		ID:        r.ID,
 		AccountID: r.AccountID,
@@ -87,8 +87,8 @@ type Transaction struct {
 }
 
 // NewTransaction -- for writes. Should not leak outside repository
-func NewTransaction(m model.Transaction) Transaction {
-	return Transaction{
+func NewTransaction(m model.Transaction) *Transaction {
+	return &Transaction{
 		WalletID: m.WalletID,
 		Type:     m.Type,
 		Currency: m.Currency,
@@ -96,7 +96,7 @@ func NewTransaction(m model.Transaction) Transaction {
 	}
 }
 
-func (r Transaction) ToModel() model.Transaction {
+func (r *Transaction) ToModel() model.Transaction {
 	return model.Transaction{
 		ID:       r.ID,
 		WalletID: r.WalletID,

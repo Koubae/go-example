@@ -57,7 +57,7 @@ func TestAccount__Create(t *testing.T) {
 		require.NotEqual(t, uuid.Nil, created.ID)
 		require.Equal(t, account.Name, created.Name)
 
-		// Using same account!
+		// Using same record!
 		created2, err := repository.Create(t.Context(), account)
 
 		require.Error(t, err)
