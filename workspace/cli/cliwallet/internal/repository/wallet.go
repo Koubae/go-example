@@ -14,7 +14,7 @@ type Wallet interface {
 	GetByID(ctx context.Context, id uuid.UUID) (model.Wallet, error)
 
 	GetByAccountIDAndName(ctx context.Context, accountID uuid.UUID, name string) (model.Wallet, error)
-	ListByAccountID(ctx context.Context, accountID uuid.UUID) ([]model.Wallet, error)
+	ListByAccountID(ctx context.Context, accountID uuid.UUID, limit, offset int) ([]model.Wallet, error)
 }
 
 type wallet struct {
@@ -60,6 +60,29 @@ func (r *wallet) GetByAccountIDAndName(ctx context.Context, accountID uuid.UUID,
 	return record.ToModel(), nil
 }
 
-func (r *wallet) ListByAccountID(ctx context.Context, accountID uuid.UUID) ([]model.Wallet, error) {
-	return []model.Wallet{}, nil
+func (r *wallet) ListByAccountID(ctx context.Context, accountID uuid.UUID, limit, offset int) ([]model.Wallet, error) {
+	if limit <= 0 {
+		return nil, ErrQueryInvalidLimit
+	}
+	if offset < 0 {
+		return nil, ErrQueryInvalidOffSet
+	}
+
+	var records []record.Wallet
+	err := r.db.WithContext(ctx).
+		Where("account_id = ?", accountID).
+		Limit(limit).
+		Offset(offset).
+		Find(&records).
+		Error
+	if err != nil {
+		return nil, translateError(err)
+	}
+
+	models := make([]model.Wallet, 0, len(records))
+	for _, rec := range records {
+		models = append(models, rec.ToModel())
+	}
+	return models, nil
+
 }

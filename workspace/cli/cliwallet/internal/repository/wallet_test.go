@@ -343,15 +343,89 @@ func TestWallet__ListByAccountID(t *testing.T) {
 	accountRepo := NewAccountRepo(db)
 	repository := NewWalletRepo(db)
 
+	_id := uuid.NewString()[:8]
 	account, err := accountRepo.Create(t.Context(), model.Account{
-		Name: "unit-test-account-" + uuid.NewString()[:8],
+		Name: "unit-test-account-" + _id,
 	})
 	require.NoError(t, err)
 
+	wallets := [5]model.Wallet{
+		{Name: "multi-wallet-1-" + _id, Currency: model.EUR, Balance: model.NewMoney(1050, model.EUR)},
+		{Name: "multi-wallet-2-" + _id, Currency: model.EUR, Balance: model.NewMoney(2500, model.EUR)},
+		{Name: "multi-wallet-3-" + _id, Currency: model.EUR, Balance: model.NewMoney(600000, model.USD)},
+		{Name: "multi-wallet-4-" + _id, Currency: model.EUR, Balance: model.NewMoney(300000, model.JPY)},
+		{Name: "multi-wallet-5-" + _id, Currency: model.EUR, Balance: model.NewMoney(45000, model.EUR)},
+	}
+	idToName := make(map[uuid.UUID]string, len(wallets))
+	for _, wallet := range wallets {
+		wallet.AccountID = account.ID
+
+		created, err := repository.Create(t.Context(), wallet)
+		require.NoError(t, err)
+		require.NotEqual(t, uuid.Nil, created.ID)
+
+		idToName[created.ID] = wallet.Name
+	}
+
 	t.Run("on success", func(t *testing.T) {
-		fmt.Println(repository)
-		fmt.Println(accountRepo)
-		fmt.Println(account.ID)
+		records, err := repository.ListByAccountID(t.Context(), account.ID, len(wallets), 0)
+
+		require.NoError(t, err)
+		assert.Equal(t, len(wallets), len(records))
+		for _, record := range records {
+			expected, ok := idToName[record.ID]
+			require.True(t, ok)
+
+			assert.Equal(t, expected, record.Name)
+		}
+	})
+	t.Run("on not found", func(t *testing.T) {
+		records, err := repository.ListByAccountID(t.Context(), uuid.New(), 10, 0)
+
+		require.NoError(t, err)
+		assert.Equal(t, []model.Wallet{}, records)
+	})
+	t.Run("limit & offset respected", func(t *testing.T) {
+
+		seen := make(map[uuid.UUID]struct{}, len(wallets))
+		limit := 1
+		offset := 0
+		for i := range len(wallets) {
+			records, err := repository.ListByAccountID(t.Context(), account.ID, limit, offset)
+
+			require.NoError(t, err)
+			require.Len(t, records, 1, fmt.Sprintf("unexpected records found in loop %d", i+1))
+
+			_, duplicate := seen[records[0].ID]
+			require.False(t, duplicate)
+			seen[records[0].ID] = struct{}{}
+
+			offset++
+		}
+		assert.Len(t, seen, len(wallets))
+
+		// offset now is len(wallets) + 1 so cursor must go beyond actual records
+		records, err := repository.ListByAccountID(t.Context(), account.ID, limit, offset)
+
+		require.NoError(t, err)
+		assert.Equal(t, 0, len(records))
+		assert.Equal(t, []model.Wallet{}, records)
+
+	})
+
+	t.Run("limit & offset validation", func(t *testing.T) {
+		record, err := repository.ListByAccountID(t.Context(), account.ID, 0, 0)
+		require.Nil(t, record)
+		require.Error(t, err, ErrQueryInvalidLimit)
+
+		record, err = repository.ListByAccountID(t.Context(), account.ID, -1, 0)
+		require.Nil(t, record)
+		require.ErrorIs(t, err, ErrQueryInvalidLimit)
+
+		record, err = repository.ListByAccountID(t.Context(), account.ID, 1, -1)
+		require.Nil(t, record)
+		require.ErrorIs(t, err, ErrQueryInvalidOffSet)
+
 	})
 
 }

@@ -14,6 +14,9 @@ var (
 	ErrRecordDuplicate = errors.New("record already exists")
 	ErrRecordNotFound  = errors.New("record not found")
 	ErrInvalidRef      = errors.New("invalid reference")
+
+	ErrQueryInvalidLimit  = errors.New("invalid query limit")
+	ErrQueryInvalidOffSet = errors.New("invalid query offset")
 )
 
 func DBSQLite() (*gorm.DB, error) {
