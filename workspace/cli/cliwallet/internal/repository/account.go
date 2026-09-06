@@ -35,7 +35,7 @@ func (r *account) Create(ctx context.Context, account model.Account) (model.Acco
 }
 
 func (r *account) GetByID(ctx context.Context, id uuid.UUID) (model.Account, error) {
-	var record *record.Account
+	var record record.Account
 	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&record).Error; err != nil {
 		return model.Account{}, translateError(err)
 	}

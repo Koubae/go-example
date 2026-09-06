@@ -94,7 +94,7 @@ func TestAccount__GetByID(t *testing.T) {
 		assert.Equal(t, uuid.Nil, record.ID)
 		require.Equal(t, model.Account{}, record)
 	})
-	t.Run("returns the matching account", func(t *testing.T) {
+	t.Run("get the matching account", func(t *testing.T) {
 		a, err := repository.Create(t.Context(), model.Account{Name: "unit-test-" + uuid.NewString()[:8]})
 		require.NoError(t, err)
 		b, err := repository.Create(t.Context(), model.Account{Name: "unit-test-" + uuid.NewString()[:8]})
