@@ -106,6 +106,6 @@ func (r *Transaction) ToModel() model.Transaction {
 		Currency:    r.Currency,
 		Amount:      model.NewMoney(r.Amount, r.Currency),
 		Description: r.Description,
-		CreatedAt:   r.CreatedAt,
+		CreatedAt:   r.CreatedAt.UTC().Truncate(time.Millisecond),
 	}
 }

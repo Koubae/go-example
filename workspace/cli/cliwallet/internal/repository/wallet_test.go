@@ -147,7 +147,6 @@ func TestWallet__GetByID(t *testing.T) {
 	t.Run("on not found", func(t *testing.T) {
 		record, err := repository.GetByID(t.Context(), uuid.New())
 
-		require.Error(t, err)
 		require.ErrorIs(t, err, ErrRecordNotFound)
 		assert.Equal(t, uuid.Nil, record.ID)
 		require.Equal(t, model.Wallet{}, record)

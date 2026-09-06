@@ -43,5 +43,27 @@ func (r *transaction) GetByID(ctx context.Context, id uuid.UUID) (model.Transact
 	return record.ToModel(), nil
 }
 func (r *transaction) ListByWalletID(ctx context.Context, walletID uuid.UUID, limit, offset int) ([]model.Transaction, error) {
-	return nil, nil
+	if limit <= 0 {
+		return nil, ErrQueryInvalidLimit
+	}
+	if offset < 0 {
+		return nil, ErrQueryInvalidOffSet
+	}
+
+	var records []record.Transaction
+	err := r.db.WithContext(ctx).
+		Where("wallet_id = ?", walletID).
+		Limit(limit).
+		Offset(offset).
+		Find(&records).
+		Error
+	if err != nil {
+		return nil, translateError(err)
+	}
+
+	models := make([]model.Transaction, 0, len(records))
+	for _, rec := range records {
+		models = append(models, rec.ToModel())
+	}
+	return models, nil
 }
