@@ -1,0 +1,13 @@
+---
+description: Go testing conventions. Use when creating, modifying, reviewing, or running tests (*_test.go, tests/ helpers, make test-unit / test-coverage).
+globs: "**/*_test.go,tests/**/*.go"
+alwaysApply: false
+---
+
+# Go tests
+
+Before creating, modifying, reviewing, or reasoning about tests, read and follow @.agents/TESTING_GO.md.
+
+`.agents/TESTING_GO.md` is the only source of testing conventions for this repo.
+
+Do not duplicate those conventions in this rule. Do not invent a different test style.
