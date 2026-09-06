@@ -38,7 +38,12 @@ func (r *wallet) Create(ctx context.Context, wallet model.Wallet) (model.Wallet,
 }
 
 func (r *wallet) GetByID(ctx context.Context, id uuid.UUID) (model.Wallet, error) {
-	return model.Wallet{}, nil
+	var record *record.Wallet
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&record).Error; err != nil {
+		return model.Wallet{}, translateError(err)
+	}
+
+	return record.ToModel(), nil
 }
 
 func (r *wallet) GetByAccountIDAndName(ctx context.Context, accountID uuid.UUID, name string) (model.Wallet, error) {
