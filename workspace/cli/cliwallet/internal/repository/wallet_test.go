@@ -373,8 +373,8 @@ func TestWallet__ListByAccountID(t *testing.T) {
 		assert.Equal(t, len(wallets), len(records))
 		for _, record := range records {
 			expected, ok := idToName[record.ID]
-			require.True(t, ok)
 
+			require.True(t, ok)
 			assert.Equal(t, expected, record.Name)
 		}
 	})

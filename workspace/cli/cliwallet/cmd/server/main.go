@@ -1,31 +1,26 @@
 package main
 
 import (
-	"cliwallet/internal/repository"
-	"fmt"
+	"cliwallet/internal/server"
+	"context"
+	"log/slog"
 	"os"
 )
 
 func main() {
-	fmt.Print("Hello from the server!")
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
+	logger.Info("cliwallet server starting")
 
-	db, err := repository.DBPostgres(repository.PostgresConfig{
-		User:     "admin",
-		Password: "admin",
-		DB:       "cli_wallet",
-		Host:     "127.0.0.1",
-		Port:     "5432",
-		SSLMode:  "disable",
-	})
+	ctx := context.Background()
+	container, err := server.NewProductionContainer(ctx, logger)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		logger.Error("failed to create container", "error", err)
 		os.Exit(1)
 	}
-	fmt.Println("Database connection Established", db)
+	if err := server.Run(ctx, logger, container); err != nil {
+		logger.Error("server failed", "error", err)
+		os.Exit(1)
+	}
 
-	if err := repository.MigrateAll(db); err != nil {
-		fmt.Printf("Error while migrate db, error: %s\n", err.Error())
-		os.Exit(1)
-	}
-	fmt.Println("Database migration completed sucessfully")
 }

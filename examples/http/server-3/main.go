@@ -9,6 +9,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -65,7 +66,7 @@ func run(ctx context.Context, logger *log.Logger) error {
 
 	go func() {
 		log.Printf("Server starting listening on %s\n", port)
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("error listen and serve, error: %v\n", err)
 			runErr = fmt.Errorf("error listen and serve, error: %w", err)
 		}
