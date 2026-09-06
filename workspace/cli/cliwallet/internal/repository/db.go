@@ -2,6 +2,7 @@ package repository
 
 import (
 	"cliwallet/internal/record"
+	"context"
 	"errors"
 	"fmt"
 
@@ -105,4 +106,32 @@ func translateError(err error) error {
 	default:
 		return err
 	}
+}
+
+type Tx struct {
+	db *gorm.DB
+}
+
+func (t Tx) Session() *gorm.DB {
+	return t.db
+}
+
+type TXfn func(Tx) error
+
+type DBTx interface {
+	Do(ctx context.Context, fn TXfn) error
+}
+
+type dbTx struct {
+	db *gorm.DB
+}
+
+func NewDBTx(db *gorm.DB) DBTx {
+	return &dbTx{db: db}
+}
+
+func (t *dbTx) Do(ctx context.Context, fn TXfn) error {
+	return t.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		return fn(Tx{db: tx})
+	})
 }

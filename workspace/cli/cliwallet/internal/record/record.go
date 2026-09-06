@@ -77,11 +77,11 @@ type Transaction struct {
 
 	WalletID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Type     model.TransactionType `gorm:"not null"`
-	Currency model.Currency        `gorm:"not null"`
-	Amount   int64                 `gorm:"not null"`
-
-	CreatedAt time.Time
+	Type        model.TransactionType `gorm:"not null"`
+	Currency    model.Currency        `gorm:"not null"`
+	Amount      int64                 `gorm:"not null"`
+	Description string                `gorm:"not null"`
+	CreatedAt   time.Time
 
 	Wallet Wallet `gorm:"foreignKey:WalletID"`
 }
@@ -89,19 +89,23 @@ type Transaction struct {
 // NewTransaction -- for writes. Should not leak outside repository
 func NewTransaction(m model.Transaction) *Transaction {
 	return &Transaction{
-		WalletID: m.WalletID,
-		Type:     m.Type,
-		Currency: m.Currency,
-		Amount:   m.Amount.Amount,
+		WalletID:    m.WalletID,
+		Type:        m.Type,
+		Currency:    m.Currency,
+		Amount:      m.Amount.Amount,
+		Description: m.Description,
+		CreatedAt:   m.CreatedAt,
 	}
 }
 
 func (r *Transaction) ToModel() model.Transaction {
 	return model.Transaction{
-		ID:       r.ID,
-		WalletID: r.WalletID,
-		Type:     r.Type,
-		Currency: r.Currency,
-		Amount:   model.NewMoney(r.Amount, r.Currency),
+		ID:          r.ID,
+		WalletID:    r.WalletID,
+		Type:        r.Type,
+		Currency:    r.Currency,
+		Amount:      model.NewMoney(r.Amount, r.Currency),
+		Description: r.Description,
+		CreatedAt:   r.CreatedAt,
 	}
 }

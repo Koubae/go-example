@@ -15,6 +15,8 @@ type Wallet interface {
 
 	GetByAccountIDAndName(ctx context.Context, accountID uuid.UUID, name string) (model.Wallet, error)
 	ListByAccountID(ctx context.Context, accountID uuid.UUID, limit, offset int) ([]model.Wallet, error)
+
+	UpdateBalance(ctx context.Context, tx *gorm.DB, id uuid.UUID, balance int64) error
 }
 
 type wallet struct {
@@ -85,4 +87,9 @@ func (r *wallet) ListByAccountID(ctx context.Context, accountID uuid.UUID, limit
 	}
 	return models, nil
 
+}
+
+func (r *wallet) UpdateBalance(ctx context.Context, tx *gorm.DB, id uuid.UUID, balance int64) error {
+	// TODO: Implement this
+	return nil
 }

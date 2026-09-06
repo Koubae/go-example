@@ -26,7 +26,7 @@ func TestAccount__Create(t *testing.T) {
 		require.NotEqual(t, uuid.Nil, created.ID)
 		require.Equal(t, account.Name, created.Name)
 	})
-	t.Run("on duplicate id is ignored", func(t *testing.T) {
+	t.Run("on injecting duplicate id new one is replaces", func(t *testing.T) {
 		account := model.Account{
 			Name: "unit-test-" + uuid.NewString()[:8],
 		}

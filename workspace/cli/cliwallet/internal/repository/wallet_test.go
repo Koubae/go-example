@@ -65,7 +65,7 @@ func TestWallet__Create(t *testing.T) {
 		}
 
 	})
-	t.Run("on duplicate id is ignored", func(t *testing.T) {
+	t.Run("on injecting duplicate id new one is replaces", func(t *testing.T) {
 		account, err := accountRepo.Create(t.Context(), model.Account{
 			Name: "unit-test-account-" + uuid.NewString()[:8],
 		})
